@@ -1,4 +1,4 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, expect, Page, request } from "@playwright/test";
 
 /**
  * EJEMPLO DE INTEGRATION TEST
@@ -246,6 +246,20 @@ test.describe("User API - Integration Tests", () => {
       expect(typeof body.data.averageAge).toBe("number");
 
       expect(body.data.active).toBeLessThanOrEqual(body.data.total);
+    });
+
+    test("should return 404 for non-existing user in updateUser", async ({
+      request,
+    }) => {
+      const updateData = {
+        name: "Updated Name",
+        age: 31,
+      };
+      const result = await request.put(`${API_BASE}/users/999`, {
+        data: updateData,
+      });
+
+      expect(result.status()).toBe(404);
     });
   });
 
